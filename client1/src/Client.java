@@ -23,7 +23,7 @@ public class Client implements Runnable{
 
 	@Override
 	public void run() { 
-		// TODO parse message not do
+		// TODO parse message not do //
 		try {
 			while (true) {
 				String TransferLine = is.readUTF();
