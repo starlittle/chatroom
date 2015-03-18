@@ -7,7 +7,7 @@ import java.net.Socket;
 public class Client implements Runnable{
 
 	private static Socket socket;
-	private String address = "140.112.18.219";//"140.112.18.219"; 
+	private String address = "140.112.18.220";//"140.112.18.219"; 
 	private int port = 8010;
 	private static InetSocketAddress isa;
 	private DataOutputStream os;
@@ -21,7 +21,7 @@ public class Client implements Runnable{
 	}
 
 	@Override
-	public void run() { //
+	public void run() { 
 		// TODO Auto-generated method stub
 		try {
 			while (true) {
@@ -47,8 +47,26 @@ public class Client implements Runnable{
 		//reconnect();
 	}
 
-	private void reconnect() {
+	public synchronized void reconnect() {
 		// TODO Auto-generated method stub
+		try {
+			socket.connect(isa, 10000);
+			System.out.println("資料庫連線成功");
+			//sendName();
+			
+			os = new DataOutputStream(socket.getOutputStream());
+            is = new DataInputStream(socket.getInputStream());
+            this.os = new DataOutputStream(os);
+            this.is = new DataInputStream(is);
+            
+            send("Hi again!!");
+            thread = new Thread(this);
+            thread.start(); // run()
+            
+		}
+		catch (Exception e) {
+			
+		}
 		
 	}
 
@@ -60,7 +78,7 @@ public class Client implements Runnable{
 			//BufferedInputStream in = new BufferedInputStream(socket.getInputStream());           
             
             System.out.println("資料庫連線成功");
-            //sendName();
+            sendName();
             
             os = new DataOutputStream(socket.getOutputStream());
             is = new DataInputStream(socket.getInputStream());
@@ -80,21 +98,25 @@ public class Client implements Runnable{
 		}
 	}
 	
-	synchronized private void sendName() throws IOException {
+	public synchronized void sendName() throws IOException {
 		// TODO Auto-generated method stub
 		DataOutputStream o = new DataOutputStream(socket.getOutputStream());
 		DataInputStream i = new DataInputStream(socket.getInputStream());
 		
 		String msg = "QAQ";
 		
-		try {
-			os.writeUTF(msg);
-			System.out.println("send: " + msg);
-		}
-		catch (Exception e) {
-			interrupt();
-		}
+		System.out.println("Send user name: " + msg);
+		o.writeUTF(msg);
 		
+		while (true) {
+			msg = i.readUTF();
+			if (msg.equals("Recvname"))
+				break;
+			else {
+				System.out.println("not check receive?");
+				break;
+			}
+		}
 		
 	}
 
