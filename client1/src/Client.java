@@ -7,7 +7,7 @@ import java.net.Socket;
 public class Client implements Runnable{
 
 	private static Socket socket;
-	private String address = "140.112.18.219"; 
+	private String address = "140.112.18.219";//"140.112.18.219"; 
 	private int port = 8010;
 	private static InetSocketAddress isa;
 	private DataOutputStream os;
@@ -21,14 +21,14 @@ public class Client implements Runnable{
 	}
 
 	@Override
-	public void run() {
+	public void run() { //
 		// TODO Auto-generated method stub
 		try {
 			while (true) {
 				String TransferLine = is.readUTF();
 				System.out.println("Recv: " + TransferLine);
 				
-				parseMsg(TransferLine);
+				//parseMsg(TransferLine);
 			}
 		}
 		catch (Exception e) {
@@ -44,6 +44,11 @@ public class Client implements Runnable{
 	private void interrupt() {
 		// TODO Auto-generated method stub
 		System.out.println("interrupt!!!");
+		//reconnect();
+	}
+
+	private void reconnect() {
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -63,7 +68,7 @@ public class Client implements Runnable{
             this.is = new DataInputStream(is);
             
             // 送出字串
-            send("hi");
+            send("hi!!");
             thread = new Thread(this);
             thread.start(); // run()
             
