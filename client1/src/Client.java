@@ -7,12 +7,13 @@ import java.net.Socket;
 public class Client implements Runnable{
 
 	private static Socket socket;
-	private String address = "140.112.18.220";//"140.112.18.219"; 
+	private String address = "140.112.18.219";//"140.112.18.219"; 
 	private int port = 8010;
 	private static InetSocketAddress isa;
 	private DataOutputStream os;
 	private DataInputStream is;
 	private static Thread thread;
+	private String username;
 	
 	Client() {
 		socket = new Socket();
@@ -22,7 +23,7 @@ public class Client implements Runnable{
 
 	@Override
 	public void run() { 
-		// TODO Auto-generated method stub
+		// TODO parse message not do
 		try {
 			while (true) {
 				String TransferLine = is.readUTF();
@@ -70,14 +71,15 @@ public class Client implements Runnable{
 		
 	}
 
-	public void connect() {
-		
+	public void connect() {		
 		try {
+//			isa = new InetSocketAddress(address, port);
+			
 			socket.connect(isa, 10000); //timeout
 			//BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
 			//BufferedInputStream in = new BufferedInputStream(socket.getInputStream());           
             
-            System.out.println("資料庫連線成功");
+            System.out.println("Connect succeed!");
             sendName();
             
             os = new DataOutputStream(socket.getOutputStream());
@@ -92,7 +94,7 @@ public class Client implements Runnable{
             
 		}
 		catch(Exception e){
-			System.out.println("Socket連線有問題 !");
+			System.out.println("Socket connect failed!");
             System.out.println("IOException :" + e.toString());
 			
 		}
