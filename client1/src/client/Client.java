@@ -1,3 +1,4 @@
+package client;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -80,7 +81,7 @@ public class Client implements Runnable{
 			//BufferedInputStream in = new BufferedInputStream(socket.getInputStream());           
             
             System.out.println("Connect succeed!");
-            sendName();
+            //sendName();
             
             os = new DataOutputStream(socket.getOutputStream());
             is = new DataInputStream(socket.getInputStream());
@@ -105,19 +106,30 @@ public class Client implements Runnable{
 		DataOutputStream o = new DataOutputStream(socket.getOutputStream());
 		DataInputStream i = new DataInputStream(socket.getInputStream());
 		
-		String msg = "QAQ";
+		//String msg = i.readUTF();
+		String username = "QAQ";
+		//System.out.println(msg);
 		
-		System.out.println("Send user name: " + msg);
-		o.writeUTF(msg);
+		System.out.println("Send user name: " + username);
+		o.writeUTF(username);
 		
-		while (true) {
-			msg = i.readUTF();
-			if (msg.equals("Recvname"))
-				break;
-			else {
-				System.out.println("not check receive?");
-				break;
+		try {
+			while (true) {
+				System.out.println("processing");
+				String msg = i.readUTF();
+				msg = i.readUTF();////
+				if (msg.equals("Recvname")) {
+					System.out.println("Receive name check");
+					break;
+				}
+				else {
+					System.out.println("not check receive?");
+				//break;
+				}
 			}
+		}
+		catch (Exception e) {
+			interrupt();
 		}
 		
 	}
