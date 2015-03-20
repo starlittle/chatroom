@@ -10,8 +10,6 @@ public class server{
 	private final int sPort = 8010;
 	Vector<clientfile> clientList;
 	private int id;
-//	private DataInputStream in;
-//	private DataOutputStream out;
 	public server(){
 		clientList = new Vector<clientfile>();
 		try{
@@ -22,6 +20,8 @@ public class server{
 					s = ss.accept();
 					clientList.add(new clientfile(this,s,id++));
 				}
+				Thread t = new Thread(clientList.lastElement());
+				t.start();
 				System.out.println("connected!");
 			}
 		}
@@ -33,9 +33,11 @@ public class server{
 		// TODO Auto-generated method stub
 		System.out.println("interrupt");
 	}
-	/*	public void run(){
-		
-	}*/
+	public void sendAll(String msg){
+		for(clientfile c: clientList){
+			c.send(msg);
+		}
+	}
 	private void parseMsg(String msg) {
 		// TODO Auto-generated method stub
 		String[] splitedLine = msg.split(" ", 3);

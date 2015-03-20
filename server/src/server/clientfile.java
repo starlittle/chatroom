@@ -10,6 +10,7 @@ public class clientfile implements Runnable{
 	private DataOutputStream out;
 	private String msg,name;
 	private int id;
+	String TransferLine;
 	
 	public clientfile(server ms, Socket ss, int cid){
 		try{
@@ -23,19 +24,21 @@ public class clientfile implements Runnable{
 			System.out.println(e.toString());
 		}   
 	}
-	
+	public void send(String s){
+		try{
+			out.writeUTF(s);			
+		}catch(IOException e){
+			System.out.println(e.toString());
+		}
+	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		try{
 			while(true){
-				String TransferLine = in.readUTF();
+				TransferLine = in.readUTF();
 				System.out.println("Recv: " + TransferLine);
-				try{
-					out.writeUTF("from server:"+TransferLine);
-				}catch(IOException e){
-					System.out.println(e.toString());
-				}
+				out.writeUTF("Recvname");
 			}
 		}catch(IOException e){
 			System.out.println(e.toString());

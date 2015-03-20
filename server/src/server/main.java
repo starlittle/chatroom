@@ -8,6 +8,5 @@ public class main {
      */
     public static void main(String[] args) throws Throwable {
 		s = new server();
-//		s.start();
     }
 }
