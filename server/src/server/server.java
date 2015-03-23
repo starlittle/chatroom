@@ -9,9 +9,11 @@ public class server{
 	private ServerSocket ss;
 	private final int sPort = 8010;
 	Vector<clientfile> clientList;
+	Vector<String> nameList;
 	private int id;
 	public server(){
 		clientList = new Vector<clientfile>();
+		nameList = new Vector<String>();
 		try{
 			ss = new ServerSocket(sPort);
 			while(true){
@@ -35,7 +37,7 @@ public class server{
 	}
 	public void sendAll(String msg){
 		for(clientfile c: clientList){
-			c.send(msg);			
+			c.send("/p "+msg);			
 		}
 	}
 	public void sendPrivate(String msg){
@@ -46,5 +48,7 @@ public class server{
 		String[] splitedLine = msg.split(" ", 3);
         System.out.println("User joined:" + splitedLine[1]);
 	}
-	
+	public void adduser(String name,int id){
+		nameList.add(name);
+	}
 }

@@ -35,6 +35,7 @@ public class clientfile implements Runnable{
 	public void run() {
 		// TODO Auto-generated method stub
 		try{
+			setname();
 			while(true){
 				TransferLine = in.readUTF();
 				System.out.println("Recv: " + TransferLine);
@@ -47,6 +48,23 @@ public class clientfile implements Runnable{
 	}
 	public void parseMsg(String msg){
 		mainserver.sendAll("id"+id+": "+msg);
+	}
+	public void setname()throws IOException{
+		String buf;		
+		while(true){
+			buf = in.readUTF();
+			if(mainserver.nameList.contains(buf)){
+				out.writeUTF("Name used!");
+				continue;
+			}
+			else{
+				name = buf;
+				mainserver.adduser(name,id);
+				out.writeUTF("Recvname");
+				mainserver.sendAll(name+" joined!");
+				break;
+			}
+		}
 	}
 	
 	
