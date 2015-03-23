@@ -21,14 +21,14 @@ public class clientfile implements Runnable{
 			id = cid;
 			
 		}catch(IOException e){
-			System.out.println(e.toString());
+			System.out.println("constructed err: "+e.toString());
 		}   
 	}
 	public void send(String s){
 		try{
 			out.writeUTF(s);			
 		}catch(IOException e){
-			System.out.println(e.toString());
+			System.out.println("write err: "+e.toString());
 		}
 	}
 	@Override
@@ -38,11 +38,15 @@ public class clientfile implements Runnable{
 			while(true){
 				TransferLine = in.readUTF();
 				System.out.println("Recv: " + TransferLine);
-				out.writeUTF("Recvname");
+				parseMsg(TransferLine);
+				//out.writeUTF("server sent back to id"+id + ":"+TransferLine);
 			}
 		}catch(IOException e){
-			System.out.println(e.toString());
+			System.out.println("in run(): "+e.toString());
 		}
+	}
+	public void parseMsg(String msg){
+		mainserver.sendAll("id"+id+": "+msg);
 	}
 	
 	

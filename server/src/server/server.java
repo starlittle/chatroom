@@ -35,8 +35,11 @@ public class server{
 	}
 	public void sendAll(String msg){
 		for(clientfile c: clientList){
-			c.send(msg);
+			c.send(msg);			
 		}
+	}
+	public void sendPrivate(String msg){
+		//c,
 	}
 	private void parseMsg(String msg) {
 		// TODO Auto-generated method stub
