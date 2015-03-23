@@ -21,7 +21,10 @@ public class ChatFrame extends JFrame{
 	public ChatFrame( Client co) {
 		initComponents();
 		ClientObject = co;
-		
+	}
+	
+	public void printonGUI (String msg) {
+		output.append(msg + "\n"); 
 	}
 
 	private void prepareMsg(String msg) {
@@ -36,8 +39,9 @@ public class ChatFrame extends JFrame{
         temp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         temp.setLayout(new GridLayout(2, 2));
         message = null;
-        input = new JTextField("");
-        output = new JTextArea();
+        input = new JTextField(20);
+        output = new JTextArea(5,20);
+        output.setEditable(false);
         
         temp.add(output);
 		temp.add(input);
@@ -49,7 +53,7 @@ public class ChatFrame extends JFrame{
 				// TODO Auto-generated method stub
 				//typing();
 				message = input.getText();
-				output.append(message + "\n"); 
+				//output.append(message + "\n"); 
 				input.setText(null);
 				//System.out.println("send for frame: " + message);
 				prepareMsg(message);	

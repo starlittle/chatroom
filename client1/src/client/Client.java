@@ -41,7 +41,7 @@ public class Client implements Runnable{
 				
 				String TransferLine = is.readUTF();
 				System.out.println("Recv: " + TransferLine);
-				
+				GUIObject.printonGUI(TransferLine);
 				//parseMsg(TransferLine);
 			}
 		}
@@ -115,7 +115,7 @@ public class Client implements Runnable{
 		DataInputStream i = new DataInputStream(socket.getInputStream());
 		
 		//String msg = i.readUTF();
-		username = "QAQ";
+		username = "I am user!";
 		//System.out.println(msg);
 		
 		System.out.println("Send user name: " + username);
@@ -123,9 +123,7 @@ public class Client implements Runnable{
 		
 		try {
 			while (true) {
-				System.out.println("processing");
 				String msg = i.readUTF();
-				//msg = i.readUTF();////
 				if (msg.equals("Recvname")) {
 					System.out.println("Receive name check");
 					break;
