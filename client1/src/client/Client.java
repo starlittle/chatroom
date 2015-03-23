@@ -1,11 +1,17 @@
 package client;
 
+import gui.ChatFrame;
+
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 
 public class Client implements Runnable{
+	
+	//
+	ChatFrame GUIObject;
+	//ConnectWindow 
 
 	private static Socket socket;
 	private String address = "140.112.18.219";//"140.112.18.219"; 
@@ -17,6 +23,10 @@ public class Client implements Runnable{
 	private String username;
 	
 	Client() {
+		GUIObject = new ChatFrame(this);
+		//GUIObject.setVisible(true);
+		
+		//
 		socket = new Socket();
 		isa = new InetSocketAddress(this.address, this.port);		
 		//connect();
@@ -25,8 +35,10 @@ public class Client implements Runnable{
 	@Override
 	public void run() { 
 		// TODO parse message not do //
+		String m = GUIObject.message;
 		try {
 			while (true) {
+				
 				String TransferLine = is.readUTF();
 				System.out.println("Recv: " + TransferLine);
 				
@@ -85,7 +97,7 @@ public class Client implements Runnable{
             this.is = new DataInputStream(is);
             
             // 送出字串
-            send("hi!!");
+            //send("hi!");
             thread = new Thread(this);
             thread.start(); // run()
             
@@ -120,6 +132,7 @@ public class Client implements Runnable{
 				}
 				else {
 					System.out.println("not check receive?");
+					System.out.println(msg);
 				    break;
 				}
 			}
@@ -130,9 +143,8 @@ public class Client implements Runnable{
 		
 	}
 
-	private void send(String msg) {
-		// TODO Auto-generated method stub
-		
+	public void send(String msg) {
+		// TODO Auto-generated method stub	
 		try {
 			os.writeUTF(msg);
 			System.out.println("send: " + msg);
