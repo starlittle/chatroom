@@ -37,18 +37,22 @@ public class server{
 	}
 	public void sendAll(String msg){
 		for(clientfile c: clientList){
-			c.send("/p "+msg);			
+			if(c.onleave==true) c.send(msg);			
 		}
 	}
-	public void sendPrivate(String msg){
-		//c,
-	}
-	private void parseMsg(String msg) {
-		// TODO Auto-generated method stub
-		String[] splitedLine = msg.split(" ", 3);
-        System.out.println("User joined:" + splitedLine[1]);
+	public boolean sendPrivate(int id, String msg){
+		clientfile c = clientList.get(id);
+		if(c.onleave==false) return false;
+		else {
+			c.send(msg);
+			return true;
+		}
 	}
 	public void adduser(String name,int id){
 		nameList.add(name);
+	}
+	public void leave(int id){
+		sendAll("/du " + id);
+		sendAll("/p " + nameList.get(id) + " left");		
 	}
 }

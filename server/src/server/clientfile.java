@@ -10,6 +10,7 @@ public class clientfile implements Runnable{
 	private DataOutputStream out;
 	private String msg,name;
 	private int id;
+	public boolean onleave=false;
 	String TransferLine;
 	
 	public clientfile(server ms, Socket ss, int cid){
@@ -19,7 +20,7 @@ public class clientfile implements Runnable{
 			in = new DataInputStream(s.getInputStream());
 			out = new DataOutputStream(s.getOutputStream());
 			id = cid;
-			
+			onleave = true;
 		}catch(IOException e){
 			System.out.println("constructed err: "+e.toString());
 		}   
@@ -27,6 +28,7 @@ public class clientfile implements Runnable{
 	public void send(String s){
 		try{
 			out.writeUTF(s);			
+			System.out.println(s);
 		}catch(IOException e){
 			System.out.println("write err: "+e.toString());
 		}
@@ -40,14 +42,26 @@ public class clientfile implements Runnable{
 				TransferLine = in.readUTF();
 				System.out.println("Recv: " + TransferLine);
 				parseMsg(TransferLine);
-				//out.writeUTF("server sent back to id"+id + ":"+TransferLine);
 			}
 		}catch(IOException e){
-			System.out.println("in run(): "+e.toString());
+			if(e instanceof SocketException){
+				onleave = false;
+				mainserver.leave(id);
+			}
+			else System.out.println("in run(): "+e.toString());
 		}
 	}
 	public void parseMsg(String msg){
-		mainserver.sendAll("id"+id+": "+msg);
+		if(msg.startsWith("/sa")){
+			String msgsent = msg.split(" ", 2)[1];
+			mainserver.sendAll("/p "+ name + " says: " + msgsent);
+		}
+		else if(msg.startsWith("/sw")){
+			int destid = Integer.parseInt(msg.split(" ", 3)[1]);
+			String msgsent = msg.split(" ", 3)[2];
+			boolean err = mainserver.sendPrivate(destid, "/p "+ name + " says: " + msgsent);
+			if(err==false) send("No such user!");
+		}
 	}
 	public void setname()throws IOException{
 		String buf;		
@@ -61,7 +75,10 @@ public class clientfile implements Runnable{
 				name = buf;
 				mainserver.adduser(name,id);
 				out.writeUTF("Recvname");
-				mainserver.sendAll(name+" joined!");
+				for(clientfile c:(mainserver.clientList)){
+					if(c!=this)	send("/ul " + c.name + " " + c.id);
+				}
+				mainserver.sendAll("/au " + name + " " + id);
 				break;
 			}
 		}
