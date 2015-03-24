@@ -11,9 +11,13 @@ public class server{
 	Vector<clientfile> clientList;
 	Vector<String> nameList;
 	private int id;
+	private ServerDisplay gui;
+	
 	public server(){
 		clientList = new Vector<clientfile>();
 		nameList = new Vector<String>();
+		gui = new ServerDisplay(this);
+		gui.setVisible(true);
 		try{
 			ss = new ServerSocket(sPort);
 			while(true){
@@ -27,7 +31,7 @@ public class server{
 				System.out.println("connected!");
 			}
 		}
-		catch(java.io.IOException e){
+		catch(IOException e){
 			System.out.println("err"+e.toString());
 		}		
 	}
