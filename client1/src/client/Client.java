@@ -71,6 +71,11 @@ public class Client implements Runnable{
 			String[] split = msg.split(" ",3);
 			GUIObject.addUser(split[1], Integer.parseInt(split[2]));
 		}
+		// /du <userID>
+		else if (msg.startsWith("/du")) {
+			String[] split = msg.split(" ",2);
+			System.out.println(msg);
+		}
 		else
 			GUIObject.printonGUI(msg);
 		
@@ -136,7 +141,7 @@ public class Client implements Runnable{
 		DataInputStream i = new DataInputStream(socket.getInputStream());
 		
 		//String msg = i.readUTF();
-		username = "f";
+		username = "g";
 		//System.out.println(msg);
 		
 		System.out.println("Send user name: " + username);
