@@ -20,7 +20,9 @@ public class Client implements Runnable{
 	private DataOutputStream os;
 	private DataInputStream is;
 	private static Thread thread;
+	
 	private String username;
+	private int towho;
 	
 	Client() {
 		GUIObject = new ChatFrame(this);
@@ -40,9 +42,8 @@ public class Client implements Runnable{
 			while (true) {
 				
 				String TransferLine = is.readUTF();
-				System.out.println("Recv: " + TransferLine);
-				GUIObject.printonGUI(TransferLine);
-				//parseMsg(TransferLine);
+				System.out.println("Recv: " + TransferLine);				
+				parseMsg(TransferLine);
 			}
 		}
 		catch (Exception e) {
@@ -50,14 +51,34 @@ public class Client implements Runnable{
 		}
 	}
 	
-	private void parseMsg(String transferLine) {
+	private void parseMsg(String msg) {
 		// TODO Auto-generated method stub
+		
+		//  /p <user> <msg>
+		if (msg.startsWith("/p")) {
+			System.out.println(msg);
+			String[] split = msg.split(" ",3);
+			GUIObject.printonGUI(split[1]+ " " +split[2]);
+		}
+		// /ul <username> <id> **setting user list
+		else if (msg.startsWith("/ul")) {
+			System.out.println("in userlist");
+			String[] split = msg.split(" ",3);
+			GUIObject.userList(split[1], Integer.parseInt(split[2]));
+		}
+		// /au <username> <id> **add new user
+		else if (msg.startsWith("/au")) {
+			String[] split = msg.split(" ",3);
+			GUIObject.addUser(split[1], Integer.parseInt(split[2]));
+		}
+		else
+			GUIObject.printonGUI(msg);
 		
 	}
 
 	private void interrupt() {
 		// TODO Auto-generated method stub
-		System.out.println("interrupt!!!");
+		System.out.println("be interrupt!!!");
 		//reconnect();
 	}
 
@@ -65,7 +86,7 @@ public class Client implements Runnable{
 		// TODO Auto-generated method stub
 		try {
 			socket.connect(isa, 10000);
-			System.out.println("資料庫連線成功");
+			System.out.println("connect succeed~");
 			sendName();
 			
 			os = new DataOutputStream(socket.getOutputStream());
@@ -115,7 +136,7 @@ public class Client implements Runnable{
 		DataInputStream i = new DataInputStream(socket.getInputStream());
 		
 		//String msg = i.readUTF();
-		username = "I am user!";
+		username = "f";
 		//System.out.println(msg);
 		
 		System.out.println("Send user name: " + username);
@@ -144,13 +165,12 @@ public class Client implements Runnable{
 	public void send(String msg) {
 		// TODO Auto-generated method stub	
 		try {
-			os.writeUTF(msg);
+			os.writeUTF("/sa " + msg);
 			System.out.println("send: " + msg);
 		}
 		catch (Exception e) {
 			interrupt();
-		}
-		
+		}		
 	}
 
 }
