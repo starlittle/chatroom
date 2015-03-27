@@ -41,7 +41,10 @@ public class server{
 	}
 	public void sendAll(String msg){
 		for(clientfile c: clientList){
-			if(c.onleave==true) c.send(msg);			
+			if(c.onleave==true) {
+				c.send(msg);	
+				gui.showLog("broadcast: " + msg);
+			}
 		}
 	}
 	public boolean sendPrivate(int id, String msg){
@@ -49,14 +52,27 @@ public class server{
 		if(c.onleave==false) return false;
 		else {
 			c.send(msg);
+			gui.showLog("whisper: " + msg);
 			return true;
 		}
 	}
 	public void adduser(String name,int id){
 		nameList.add(name);
+		gui.adduser(name, id);
 	}
 	public void leave(int id){
 		sendAll("/du " + id);
-		sendAll("/p " + nameList.get(id) + " left");		
+		sendAll("/p " + nameList.get(id) + " left");
+		clientfile c = clientList.get(id);
+		c.onleave = false;
+	}
+	public void kick(int id){
+		clientfile c = clientList.get(id);
+		try {
+			c.closesocket();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

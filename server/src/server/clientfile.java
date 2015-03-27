@@ -58,8 +58,9 @@ public class clientfile implements Runnable{
 		}
 		else if(msg.startsWith("/sw")){
 			int destid = Integer.parseInt(msg.split(" ", 3)[1]);
+			int roomid = Integer.parseInt(msg.split(" ", 3)[2]);
 			String msgsent = msg.split(" ", 3)[2];
-			boolean err = mainserver.sendPrivate(destid, "/p "+ name + " says: " + msgsent);
+			boolean err = mainserver.sendPrivate(destid, "/w "+ roomid + name + " whispers: " + msgsent);
 			if(err==false) send("No such user!");
 		}
 	}
@@ -82,6 +83,9 @@ public class clientfile implements Runnable{
 				break;
 			}
 		}
+	}
+	public void closesocket() throws IOException{
+		s.close();
 	}
 	
 	
