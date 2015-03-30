@@ -13,8 +13,8 @@ public class clientfile implements Runnable{
 	private boolean onleave=false;
 	String TransferLine;
 	
-//	public clientfile(server ms, Socket ss, int cid,String cname){
-	public clientfile(server ms, Socket ss, int cid){
+	public clientfile(server ms, Socket ss, int cid,String cname){
+//	public clientfile(server ms, Socket ss, int cid){
 		try{
 			s = ss;
 			mainserver = ms;
@@ -22,8 +22,9 @@ public class clientfile implements Runnable{
 			out = new DataOutputStream(s.getOutputStream());
 			id = cid;
 			onleave = false;
-//			name = cname;
-//			mainserver.adduser(name,id);
+			name = cname;
+			mainserver.adduser(name,id);
+			out.writeUTF("Recvname");
 		}catch(IOException e){
 			System.out.println("constructed err: "+e.toString());
 		}   
@@ -40,7 +41,7 @@ public class clientfile implements Runnable{
 	public void run() {
 		// TODO Auto-generated method stub
 		try{
-			setname();
+			System.out.println("in run");
 			while(true){
 				TransferLine = in.readUTF();
 				System.out.println("Recv: " + TransferLine);

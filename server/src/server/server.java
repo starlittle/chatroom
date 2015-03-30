@@ -28,11 +28,11 @@ public class server{
 				Socket s = null;
 				synchronized(this){
 					s = ss.accept();
-		//			if(nameList.contains())
-		//			in = new DataInputStream(s.getInputStream());
-		//			String cname = in.readUTF();
-		//			clientList.add(new clientfile(this,s,id++/*,cname*/));
-					clientList.add(new clientfile(this,s,id++));
+					in = new DataInputStream(s.getInputStream());
+					String cname = in.readUTF();
+//					if(nameList.contains(in))
+					clientList.add(new clientfile(this,s,id++,cname));
+//					clientList.add(new clientfile(this,s,id++));
 				}
 				Thread t = new Thread(clientList.lastElement());
 				t.start();
