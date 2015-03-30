@@ -8,11 +8,12 @@ public class clientfile implements Runnable{
 	private server mainserver;
 	private DataInputStream in;
 	private DataOutputStream out;
-	private String msg,name;
+	private String msg,name,psword;
 	private int id;
-	public boolean onleave=false;
+	private boolean onleave=false;
 	String TransferLine;
 	
+//	public clientfile(server ms, Socket ss, int cid,String cname){
 	public clientfile(server ms, Socket ss, int cid){
 		try{
 			s = ss;
@@ -20,7 +21,9 @@ public class clientfile implements Runnable{
 			in = new DataInputStream(s.getInputStream());
 			out = new DataOutputStream(s.getOutputStream());
 			id = cid;
-			onleave = true;
+			onleave = false;
+//			name = cname;
+//			mainserver.adduser(name,id);
 		}catch(IOException e){
 			System.out.println("constructed err: "+e.toString());
 		}   
@@ -44,11 +47,11 @@ public class clientfile implements Runnable{
 				parseMsg(TransferLine);
 			}
 		}catch(IOException e){
-			if(e instanceof SocketException){
-				onleave = false;
+//			if(e instanceof SocketException){
+				onleave = true;
 				mainserver.leave(id);
-			}
-			else System.out.println("in run(): "+e.toString());
+//			}
+//			else System.out.println("in run(): "+e.toString());
 		}
 	}
 	public void parseMsg(String msg){
@@ -63,6 +66,9 @@ public class clientfile implements Runnable{
 			boolean err = mainserver.sendPrivate(destid, "/w "+ roomid + name + " whispers: " + msgsent);
 			if(err==false) send("No such user!");
 		}
+		else if(msg.startsWith("/ar")){
+			
+		}
 	}
 	public void setname()throws IOException{
 		String buf;		
@@ -74,15 +80,23 @@ public class clientfile implements Runnable{
 			}
 			else{
 				name = buf;
+				//psword = in.readUTF();
 				mainserver.adduser(name,id);
 				out.writeUTF("Recvname");
 				for(clientfile c:(mainserver.clientList)){
 					if(c!=this)	send("/ul " + c.name + " " + c.id);
 				}
 				mainserver.sendAll("/au " + name + " " + id);
+				mainserver.sendAll("/p " + name + " joined!");
 				break;
 			}
 		}
+	}
+	public String getname(){
+		return name;
+	}
+	public boolean isonleave(){
+		return onleave;
 	}
 	public void closesocket() throws IOException{
 		s.close();
