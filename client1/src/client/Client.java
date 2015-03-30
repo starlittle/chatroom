@@ -1,8 +1,10 @@
 package client;
 
 import gui.ChatFrame;
+import gui.ConnectWindow;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -11,11 +13,10 @@ public class Client implements Runnable{
 	
 	//
 	ChatFrame GUIObject;
-	ChatTab gui;
-	//ConnectWindow 
+	ConnectWindow connectWin;
 
 	private static Socket socket;
-	private String address = "140.112.18.219";//"140.112.18.219"; 
+	private String address;// = "140.112.18.219"; 
 	private int port = 8010;
 	private static InetSocketAddress isa;
 	private DataOutputStream os;
@@ -26,13 +27,12 @@ public class Client implements Runnable{
 	private int towho;
 	
 	Client() {
-		GUIObject = new ChatFrame(this);
-		gui = new ChatTab(this);
-		//GUIObject.setVisible(true);
+		GUIObject = new ChatFrame(this);	
+		GUIObject.setVisible(true);
 		
-		//
-		socket = new Socket();
-		isa = new InetSocketAddress(this.address, this.port);		
+		
+		//socket = new Socket();
+		//isa = new InetSocketAddress(this.address, this.port);		
 		//connect();
 	}
 
@@ -54,7 +54,6 @@ public class Client implements Runnable{
 	}
 	
 	private void parseMsg(String msg) {
-		// TODO Auto-generated method stub
 		
 		//  /p <user> <msg>
 		if (msg.startsWith("/p")) {
@@ -91,7 +90,7 @@ public class Client implements Runnable{
 
 	private void interrupt() {
 		// TODO Auto-generated method stub
-		System.out.println("be interrupt!!!");
+		System.out.println("error interrupt!!!");
 		//reconnect();
 	}
 
@@ -107,7 +106,7 @@ public class Client implements Runnable{
             this.os = new DataOutputStream(os);
             this.is = new DataInputStream(is);
             
-            send("Hi again!!");
+            //send("Hi again!!");
             thread = new Thread(this);
             thread.start(); // run()
             
@@ -118,9 +117,23 @@ public class Client implements Runnable{
 		
 	}
 
-	public void connect() {		
-		try {			
-			socket.connect(isa, 10000); //timeout
+	public synchronized void connect() {	
+		
+		connectWin = new ConnectWindow(GUIObject);
+		connectWin.setVisible(true);
+		
+		//this.notify();
+		
+		address = connectWin.IP;
+		port = connectWin.port;
+		username = connectWin.name;
+		
+		try {
+			//socket = new Socket();
+			//isa = new InetSocketAddress(address, port);	
+			
+			socket = new Socket(InetAddress.getByName(address), port);
+			//socket.connect(isa, 10000); //timeout
      
             System.out.println("Connect succeed!");
             sendName();
@@ -149,7 +162,7 @@ public class Client implements Runnable{
 		DataInputStream i = new DataInputStream(socket.getInputStream());
 		
 		//String msg = i.readUTF();
-		username = "g";
+		//username = "j";
 		//System.out.println(msg);
 		
 		System.out.println("Send user name: " + username);
