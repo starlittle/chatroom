@@ -11,6 +11,7 @@ public class Client implements Runnable{
 	
 	//
 	ChatFrame GUIObject;
+	ChatTab gui;
 	//ConnectWindow 
 
 	private static Socket socket;
@@ -26,6 +27,7 @@ public class Client implements Runnable{
 	
 	Client() {
 		GUIObject = new ChatFrame(this);
+		gui = new ChatTab(this);
 		//GUIObject.setVisible(true);
 		
 		//
@@ -71,11 +73,17 @@ public class Client implements Runnable{
 			String[] split = msg.split(" ",3);
 			GUIObject.addUser(split[1], Integer.parseInt(split[2]));
 		}
-		// /du <userID>
+		// /du <userID> **delete user
 		else if (msg.startsWith("/du")) {
 			String[] split = msg.split(" ",2);
 			System.out.println(msg);
 		}
+		// /r <roomID>
+		else if (msg.startsWith("/r")) {
+			// add in room list
+			String[] split = msg.split(" ",2);
+			GUIObject.addroomlist(split[1]);
+ 		}
 		else
 			GUIObject.printonGUI(msg);
 		
@@ -170,12 +178,28 @@ public class Client implements Runnable{
 	public void send(String msg) {
 		// TODO Auto-generated method stub	
 		try {
-			os.writeUTF("/sa " + msg);
+			os.writeUTF(msg);
 			System.out.println("send: " + msg);
 		}
 		catch (Exception e) {
 			interrupt();
 		}		
+	}
+	
+	public void sendall(String msg) {
+		send("/sa " + msg);
+	}	
+	public void sendWhis(int whisID, int roomID, String msg) { //		
+		send("/sw " + whisID + " " + roomID + " "+ msg);
+	}
+	public void sendroom(int roomID, String msg) {
+		send("/sr " + roomID + " " + msg);
+	}
+	public void addroom(String msg) {
+		send("/ar " + msg);
+	}
+	public void addutroom(int roomID, int iuID) {
+		send("/aur " + roomID + " " + iuID);
 	}
 
 }

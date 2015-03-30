@@ -15,50 +15,77 @@ import client.Client;
 public class ChatFrame extends JFrame{
 
 	private Client ClientObject;
-	private Vector<String> userList;
+	private ChatTab GuiObject;
+	public  Vector<String> userList;
+	private Vector<String> roomList;
+	private int action; // the motion
+	private int whisID;
+	private int roomID;
+	private int iuID;
 	
 	//
 	private JFrame temp = new JFrame();
-	public JTextField input; //textpane
-	public JTextArea output; 
+	//public JTextField input; //textpane
+	//public JTextArea output; 
 	public JTextArea users;
 	public String message;
 	
 	
-	public void setClientObject (Client co) {
+	/* public void setClientObject (Client co) {
 		ClientObject = co;
-	}
+	} */
+	
 	public ChatFrame( Client co) {
-		initComponents();
+		//initComponents();
 		
 		ClientObject = co;
-		userList  = new Vector<String>();
+		GuiObject = new ChatTab();
+		userList = new Vector<String>();
+		roomList = new Vector<String>();
+		action = 0;
+		roomID = 0;
 	}
 	
 	public void printonGUI (String msg) {
-		output.append(msg + "\n"); 
+		//output.append(msg + "\n"); 
 		//System.out.println("get message " + msg);
+		GuiObject.set_Text(msg);
 	}
 	
 	public void userList(String name, int id) {
 		System.out.println("add in user list!");
 		userList.add(id,name);	
-		users.append(name + "\n");
+		//users.append(name + "\n");
 	}
 	
 	public void addUser(String name, int id) {
 		System.out.println(name + " " + id);
 		userList.add(id,name);
-		users.append(name + "\n");
-		output.append(name + " joined! \n");
+		//users.append(name + "\n");
+		//output.append(name + " joined! \n");
+	}
+	public void addroomlist(String roomID) {
+		roomList.add(roomID);
 	}
 
 	private void prepareMsg(String msg) {
-		// TODO Auto-generated method stub
-		ClientObject.send(msg);
+		
+		if (action == 1) { //whisper
+			ClientObject.sendWhis(whisID,roomID,msg);
+		}
+		else if (action == 2) { // send room message to all
+			ClientObject.sendroom(roomID,msg);
+		}
+		else if (action == 3) {
+			ClientObject.addroom("roomname");
+		}
+		else if (action == 4) {
+			ClientObject.addutroom(roomID, iuID); //userID who be invited
+		}
+		ClientObject.sendall(msg);
 	}
 
-	private void initComponents() {
+/*	private void initComponents() {
 		// TODO Auto-generated method stub
 		
 		temp.setSize(400, 300);
@@ -80,35 +107,17 @@ public class ChatFrame extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				//typing();
 				message = input.getText();
-				//output.append(message + "\n"); 
 				input.setText(null);
-				//System.out.println("send for frame: " + message);
 				prepareMsg(message);	
 			
 			}
         	
         });
-/*        input.addKeyListener(new java.awt.event.KeyAdapter(){
-        	public void keyPressed(java.awt.event.KeyEvent evt) {
-        		if (evt.getKeyChar() == '\n') {
-        			typing();
-        			ClientObject.send(message);
-        		}
-        	}
-        	public void keyReleased(java.awt.event.KeyEvent evt) {
-        		if (evt.getKeyChar() == '\n') {
-        			input.setText(null);
-        			//ClientObject.send(message);
-        		}
-        	}
-        }); */       
-        
+
 		temp.pack();
 		temp.setVisible(true);
-	}
+	}*/ 
 	
 	
 }
