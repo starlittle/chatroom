@@ -16,12 +16,16 @@ public class server{
 	private int roomid;
 	private ServerDisplay gui;
 	DataInputStream in;
+	DataOutputStream out;
+	private boolean newuser;
 	
 	public server(){
 		clientList = new Vector<clientfile>();
 		nameList = new Vector<String>();
 		gui = new ServerDisplay(this);
 		gui.setVisible(true);
+		Thread t;
+		int uid = 0;
 		try{
 			ss = new ServerSocket(sPort);
 			while(true){
@@ -29,12 +33,30 @@ public class server{
 				synchronized(this){
 					s = ss.accept();
 					in = new DataInputStream(s.getInputStream());
+					out = new DataOutputStream(s.getOutputStream());
 					String cname = in.readUTF();
-//					if(nameList.contains(in))
-					clientList.add(new clientfile(this,s,id++,cname));
+//					String pword = in.readUTF();	
+					if(nameList.contains(cname)){
+						while(true){						
+							out.writeUTF("Name used!");
+//							uid = nameList.indexOf(cname);
+//							if(pword == pswordList.get(uid))
+//								newuser = false;
+							cname = in.readUTF();
+							if(nameList.contains(cname)) continue;
+							else break;
+						}						
+					}
+					newuser = true;
+					System.out.println("new user : " + cname + " in!");
+					if(newuser==true)
+						clientList.add(new clientfile(this,s,id++,cname));
 //					clientList.add(new clientfile(this,s,id++));
 				}
-				Thread t = new Thread(clientList.lastElement());
+				if(newuser==true)
+					t = new Thread(clientList.lastElement());
+				else 
+					t = new Thread(clientList.get(uid));
 				t.start();
 				System.out.println("connected!");
 			}

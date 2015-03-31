@@ -25,6 +25,8 @@ public class clientfile implements Runnable{
 			name = cname;
 			mainserver.adduser(name,id);
 			out.writeUTF("Recvname");
+//			psword = in.readUTF();			
+
 		}catch(IOException e){
 			System.out.println("constructed err: "+e.toString());
 		}   
@@ -41,6 +43,15 @@ public class clientfile implements Runnable{
 	public void run() {
 		// TODO Auto-generated method stub
 		try{
+			for(clientfile c:(mainserver.clientList)){	
+				send("/ul " + c.name + " " + c.id);
+			}
+			for(clientfile c:(mainserver.clientList)){
+				if(c!=this && c.isonleave()==false) 
+					send("/au " + c.name + " " + c.id);
+			}
+			mainserver.sendAll("/au " + name + " " + id);
+			mainserver.sendAll("/p " + name + " joined!");
 			System.out.println("in run");
 			while(true){
 				TransferLine = in.readUTF();
@@ -69,28 +80,6 @@ public class clientfile implements Runnable{
 		}
 		else if(msg.startsWith("/ar")){
 			
-		}
-	}
-	public void setname()throws IOException{
-		String buf;		
-		while(true){
-			buf = in.readUTF();
-			if(mainserver.nameList.contains(buf)){
-				out.writeUTF("Name used!");
-				continue;
-			}
-			else{
-				name = buf;
-				//psword = in.readUTF();
-				mainserver.adduser(name,id);
-				out.writeUTF("Recvname");
-				for(clientfile c:(mainserver.clientList)){
-					if(c!=this)	send("/ul " + c.name + " " + c.id);
-				}
-				mainserver.sendAll("/au " + name + " " + id);
-				mainserver.sendAll("/p " + name + " joined!");
-				break;
-			}
 		}
 	}
 	public String getname(){
