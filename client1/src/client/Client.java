@@ -1,5 +1,6 @@
 package client;
 
+import fileexchange.FileSend;
 import gui.ChatFrame;
 import gui.ConnectWindow;
 
@@ -23,7 +24,7 @@ public class Client implements Runnable{
 	private DataInputStream is;
 	private static Thread thread;
 	
-	private String username;
+	public String username;
 	private int towho;
 	
 	Client() {
@@ -49,12 +50,13 @@ public class Client implements Runnable{
 			}
 		}
 		catch (Exception e) {
+			System.out.println("error at run");
 			interrupt();
 		}
 	}
 	
+	
 	private void parseMsg(String msg) {
-		
 		//  /p <user> <msg>
 		if (msg.startsWith("/p")) {
 			System.out.println(msg);
@@ -63,7 +65,7 @@ public class Client implements Runnable{
 		}
 		// /ul <username> <id> **setting user list
 		else if (msg.startsWith("/ul")) {
-			System.out.println("in userlist");
+		//	System.out.println("in userlist");
 			String[] split = msg.split(" ",3);
 			GUIObject.userList(split[1], Integer.parseInt(split[2]));
 		}
@@ -76,6 +78,7 @@ public class Client implements Runnable{
 		else if (msg.startsWith("/du")) {
 			String[] split = msg.split(" ",2);
 			System.out.println(msg);
+			//GUIObject.delUser(Integer.parseInt(split[1]));
 		}
 		// /r <roomID>
 		else if (msg.startsWith("/r")) {
@@ -83,6 +86,9 @@ public class Client implements Runnable{
 			String[] split = msg.split(" ",2);
 			GUIObject.addroomlist(split[1]);
  		}
+		else if (msg.startsWith("/f")) { //file receive
+			
+		}
 		else
 			GUIObject.printonGUI(msg);
 		
@@ -175,6 +181,12 @@ public class Client implements Runnable{
 					System.out.println("Receive name check");
 					break;
 				}
+				else if (msg.equals("Name used!")) {
+					System.out.println(msg);
+					GUIObject.rename();
+					sendName();
+					break;
+				}
 				else {
 					System.out.println("not check receive?");
 					System.out.println(msg);
@@ -213,6 +225,11 @@ public class Client implements Runnable{
 	}
 	public void addutroom(int roomID, int iuID) {
 		send("/aur " + roomID + " " + iuID);
+	}
+	public void sendFile(String filename) {
+		send("/f " + filename);
+		Thread fsend = new Thread(new FileSend());
+		fsend.start();
 	}
 
 }
