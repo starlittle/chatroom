@@ -75,7 +75,7 @@ public class server{
 				c.send(msg);		
 		gui.showLog("broadcast: " + msg);
 	}
-	public boolean sendPrivate(int id, String msg){
+	public boolean sendPrivate(int id, int roomid, String msg){
 		clientfile c = clientList.get(id);
 		if(c.isonleave()==true) return false;
 		else {

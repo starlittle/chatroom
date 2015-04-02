@@ -11,6 +11,7 @@ public class clientfile implements Runnable{
 	private String msg,name,psword;
 	private int id;
 	private boolean onleave=false;
+	private FileRecv filer;
 	String TransferLine;
 	
 	public clientfile(server ms, Socket ss, int cid,String cname){
@@ -43,13 +44,15 @@ public class clientfile implements Runnable{
 	public void run() {
 		// TODO Auto-generated method stub
 		try{
-			for(clientfile c:(mainserver.clientList)){	
-				send("/ul " + c.name + " " + c.id);
+			for(clientfile c:(mainserver.clientList)){
+				if(c!=this)
+					send("/ul " + c.name + " " + c.id);
 			}
 			for(clientfile c:(mainserver.clientList)){
 				if(c!=this && c.isonleave()==false) 
 					send("/au " + c.name + " " + c.id);
 			}
+			mainserver.sendAll("/ul " + name + " " + id);
 			mainserver.sendAll("/au " + name + " " + id);
 			mainserver.sendAll("/p " + name + " joined!");
 			System.out.println("in run");
@@ -72,14 +75,32 @@ public class clientfile implements Runnable{
 			mainserver.sendAll("/p "+ name + " says: " + msgsent);
 		}
 		else if(msg.startsWith("/sw")){
-			int destid = Integer.parseInt(msg.split(" ", 3)[1]);
-			int roomid = Integer.parseInt(msg.split(" ", 3)[2]);
-			String msgsent = msg.split(" ", 3)[2];
-			boolean err = mainserver.sendPrivate(destid, "/w "+ roomid + name + " whispers: " + msgsent);
+			int destid = Integer.parseInt(msg.split(" ", 4)[1]);
+			int roomid = Integer.parseInt(msg.split(" ", 4)[2]);
+			String msgsent = msg.split(" ", 4)[3];
+			boolean err = mainserver.sendPrivate(destid, roomid, "/p " + name + " whispers: " + msgsent);
+			send("/p " + name + " whispers: " + msgsent);
 			if(err==false) send("No such user!");
 		}
 		else if(msg.startsWith("/ar")){
 			
+		}
+		else if(msg.startsWith("/f")){
+			String filename = msg.split(" ", 2)[1];
+//			filer = new FileRecv(s.getInetAddress().getHostName());
+			System.out.println("Before start");
+			ServerSocket fileSocket;
+			Socket fs = null;
+			try {
+				fileSocket = new ServerSocket(9988);				
+				fs = fileSocket.accept();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Thread t = new Thread(new FileRecv(fs));
+			t.start();
+			System.out.println("After start");
 		}
 	}
 	public String getname(){
