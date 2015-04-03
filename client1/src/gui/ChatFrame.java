@@ -16,6 +16,7 @@ import javax.swing.text.SimpleAttributeSet;
 
 import client.Client;
 //import gui.ChatTab;
+import fileexchange.FileSend;
 
 
 public class ChatFrame extends JFrame{
@@ -194,7 +195,12 @@ public class ChatFrame extends JFrame{
         jScrollPane1.setViewportView(userList);
 
         jButton1.setFont(new java.awt.Font("微軟正黑體", 0, 12)); // NOI18N
-        jButton1.setText("jButton1");
+        jButton1.setText("for test");
+        jButton1.addActionListener(new java.awt.event.ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				ClientObject.sendFile("filename");
+			}
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -290,7 +296,7 @@ public class ChatFrame extends JFrame{
 	         }	
 	    }
 	    
-	    protected void delUser(int id){
+	    public void delUser(int id){
 	    	String name = ouserList.get(id);
 	   	 	ListModel.removeElement(name);
 	   	 	//tuserList.remove(id);

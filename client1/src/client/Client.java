@@ -1,5 +1,6 @@
 package client;
 
+import fileexchange.FileRecv;
 import fileexchange.FileSend;
 import gui.ChatFrame;
 import gui.ConnectWindow;
@@ -23,6 +24,7 @@ public class Client implements Runnable{
 	private DataOutputStream os;
 	private DataInputStream is;
 	private static Thread thread;
+	private int fileport;
 	
 	public String username;
 	private int towho;
@@ -31,6 +33,7 @@ public class Client implements Runnable{
 		GUIObject = new ChatFrame(this);	
 		GUIObject.setVisible(true);
 		
+		fileport = 8898;
 		
 		//socket = new Socket();
 		//isa = new InetSocketAddress(this.address, this.port);		
@@ -78,7 +81,7 @@ public class Client implements Runnable{
 		else if (msg.startsWith("/du")) {
 			String[] split = msg.split(" ",2);
 			System.out.println(msg);
-			//GUIObject.delUser(Integer.parseInt(split[1]));
+			GUIObject.delUser(Integer.parseInt(split[1]));
 		}
 		// /r <roomID>
 		else if (msg.startsWith("/r")) {
@@ -87,7 +90,9 @@ public class Client implements Runnable{
 			GUIObject.addroomlist(split[1]);
  		}
 		else if (msg.startsWith("/f")) { //file receive
-			
+			System.out.println(" start file receive");
+			Thread frecv = new Thread(new FileRecv(address));
+			frecv.start();
 		}
 		else
 			GUIObject.printonGUI(msg);
@@ -227,8 +232,9 @@ public class Client implements Runnable{
 		send("/aur " + roomID + " " + iuID);
 	}
 	public void sendFile(String filename) {
-		send("/f " + filename);
-		Thread fsend = new Thread(new FileSend());
+		//fileport++;
+		send("/f " + "who");
+		Thread fsend = new Thread(new FileSend(address));
 		fsend.start();
 	}
 

@@ -13,60 +13,44 @@ import java.net.Socket;
 
 public class FileSend implements Runnable{
 	private SendGUI gui;
+	private String serverIP;
+	
+	
+	public FileSend( String ip) {
+		serverIP = ip;
+	}
 	
 	@Override
 	public void run() {
-		//gui = new SendGUI();
+		gui = new SendGUI();
+		File sendfile = gui.getFile();
 		
 		try {
-			//ServerSocket ss = new ServerSocket(9988);
 			System.out.println("connecting…");
-			Socket socket = new Socket("140.112.18.219",9988);
-			System.out.println("is a local host");
+			Socket socket = new Socket(serverIP,9988);
 			
-			//Socket socketClient = m_serverSocket.accept();
-			//File sendfile = gui.getFile();
-			String filename = "t1.png" ;
-			File sendfile = new File(filename);
-			//gui.setVisible(true);
+			String filename = sendfile.getName() ;
+			//File sendfile = new File(filename);
+			           
+			DataOutputStream dataOut = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+	        dataOut.writeUTF(sendfile.getName());   
 			
-			OutputStream outText = socket.getOutputStream();
-            PrintStream outTextP = new PrintStream(outText);
-            outTextP.println(filename);
-            
             long filesize = sendfile.length();    
-            byte[] bufferArray = new byte[(int) filesize];        
-            FileInputStream fis = new FileInputStream(sendfile);
-            BufferedInputStream bis = new BufferedInputStream(fis);     
-            BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
-			
-            int count;
-            System.out.println("Start sending file...");
-
-            while ((count = bis.read(bufferArray)) > 0) {         
-                //System.out.println("count: " + count);
-                out.write(bufferArray, 0, count);
-            }
-            System.out.println("Finish!");
+           
+	        BufferedInputStream inputStream = new BufferedInputStream( new FileInputStream(sendfile)); 
+	        
+            System.out.println("Start sending file..." + filesize);
             
-			//DataInputStream in = new DataInputStream(s.getInputStream());
-			//DataOutputStream out = new DataOutputStream( s.getOutputStream());
-			
-			//out.writeUTF(sendfile.getName());
-			//out.writeInt(filesize);
-			
-			
-			//while(num != (-1)) { 
-	        //      out.write(bufferArray,0,num);
-	        //      out.flush();
-	        //      num = fs.read(bufferArray);
-	        //}
-			
-            out.flush();
-            socket.shutdownInput(); 
-            socket.shutdownOutput();
+            int readin; 
+            while((readin = inputStream.read()) != -1) { 
+                 dataOut.write(readin); 
+                 Thread.yield();
+            } 
             
+            dataOut.close();
+            inputStream.close();  
             socket.close();
+            System.out.println("Finish! ");
 			
 		}
 		catch(Exception e) {
