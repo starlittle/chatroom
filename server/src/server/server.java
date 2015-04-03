@@ -7,9 +7,12 @@ import server.clientfile;
 
 public class server{
 	private ServerSocket ss;
+	private ServerSocket fs;
 	private final int sPort = 8010;
+	private final int fPort = 9988;
 	Vector<clientfile> clientList;
 	Vector<room> roomlist;
+	Vector<String> roomnameList;
 	Vector<String> nameList;
 	Vector<String> pswordList;
 	private int id;
@@ -28,6 +31,7 @@ public class server{
 		int uid = 0;
 		try{
 			ss = new ServerSocket(sPort);
+			fs = new ServerSocket(fPort);
 			while(true){
 				Socket s = null;
 				synchronized(this){
@@ -50,7 +54,7 @@ public class server{
 					newuser = true;
 					System.out.println("new user : " + cname + " in!");
 					if(newuser==true)
-						clientList.add(new clientfile(this,s,id++,cname));
+						clientList.add(new clientfile(this,fs,s,id++,cname));
 //					clientList.add(new clientfile(this,s,id++));
 				}
 				if(newuser==true)
@@ -90,7 +94,8 @@ public class server{
 	}
 	public void addroom(String roomname){
 		roomlist.add(new room(roomname,roomid++));
-		gui.addroom(roomname);		
+		roomnameList.add(roomname);
+		gui.addroom(roomname);	
 	}
 	public void addtoroom(int roomID, int userID){
 		clientfile c = clientList.get(userID);
@@ -103,7 +108,7 @@ public class server{
 		room r = roomlist.get(roomID);
 		if(r.emtpy==true) return;
 		r.sendroom(msg);
-		gui.showLog("Send to room " + id + " : " + msg);
+		gui.showLog("Send to room " + roomID + " : " + msg);
 	}
 	public void leave(int id){
 		sendAll("/du " + id);

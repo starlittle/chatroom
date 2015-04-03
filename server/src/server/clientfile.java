@@ -6,6 +6,7 @@ import java.util.*;
 public class clientfile implements Runnable{
 	private Socket s;
 	private server mainserver;
+	private ServerSocket fileserver;
 	private DataInputStream in;
 	private DataOutputStream out;
 	private String msg,name,psword;
@@ -13,12 +14,14 @@ public class clientfile implements Runnable{
 	private boolean onleave=false;
 	private FileRecv filer;
 	String TransferLine;
+	String fileName;
 	
-	public clientfile(server ms, Socket ss, int cid,String cname){
+	public clientfile(server ms, ServerSocket fs, Socket ss, int cid,String cname){
 //	public clientfile(server ms, Socket ss, int cid){
 		try{
 			s = ss;
 			mainserver = ms;
+			fileserver = fs;
 			in = new DataInputStream(s.getInputStream());
 			out = new DataOutputStream(s.getOutputStream());
 			id = cid;
@@ -79,27 +82,61 @@ public class clientfile implements Runnable{
 			int roomid = Integer.parseInt(msg.split(" ", 4)[2]);
 			String msgsent = msg.split(" ", 4)[3];
 			boolean err = mainserver.sendPrivate(destid, roomid, "/p " + name + " whispers: " + msgsent);
-			send("/p " + name + " whispers: " + msgsent);
+			if(mainserver.clientList.get(id)!=this)
+				send("/p " + name + " whispers: " + msgsent);
 			if(err==false) send("No such user!");
 		}
 		else if(msg.startsWith("/ar")){
+			String roomname = msg.split(" ", 2)[1];
+			mainserver.addroom(roomname);
+			int roomid = mainserver.roomnameList.indexOf(roomname);
+			send("/r " + roomid);
+			mainserver.addtoroom(roomid, id);
+		}
+		else if(msg.startsWith("sr")){
+			int roomid = Integer.parseInt(msg.split(" ", 3)[1]);
+			String msgsent = msg.split(" ", 3)[2];
+			mainserver.sendroom(roomid,"/p " + name + " says: " + msgsent);
+		}
+		else if(msg.startsWith("/lr")){
 			
 		}
+		else if(msg.startsWith("aur")){
+			int roomid = Integer.parseInt(msg.split(" ", 3)[1]);
+			int userid = Integer.parseInt(msg.split(" ", 3)[2]);
+			String uname = mainserver.clientList.get(userid).getname();
+			mainserver.addtoroom(roomid, userid);
+			for(clientfile c:(mainserver.roomlist.get(roomid).roomclientlist)){
+				if(c!=this && c.isonleave()==false) 
+					send("/aru " + roomid + " " + c.name + " " + c.id);
+			}
+			mainserver.sendroom(roomid, "/aru " + roomid + " " + uname + " " + userid);
+		}
 		else if(msg.startsWith("/f")){
-			String filename = msg.split(" ", 2)[1];
+//			int destid = Integer.parseInt(msg.split(" ", 3)[2]);
 //			filer = new FileRecv(s.getInetAddress().getHostName());
-			System.out.println("Before start");
-			ServerSocket fileSocket;
+//			System.out.println("Before start");
+//			clientfile = mainserver.clientList.get(destid);
+			Socket fr = null;
 			Socket fs = null;
-			try {
-				fileSocket = new ServerSocket(9988);				
-				fs = fileSocket.accept();
+			try {				
+				fr = fileserver.accept();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Thread t = new Thread(new FileRecv(fs));
-			t.start();
+			Thread tr = new Thread(new FileRecv(fr,this));
+			tr.start();
+			
+			try {				
+				fs = fileserver.accept();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Thread ts = new Thread(new FileSend(fs,this,fileName));
+			ts.start();
+
 			System.out.println("After start");
 		}
 	}

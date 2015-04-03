@@ -6,7 +6,7 @@ import java.util.*;
 public class room{
 	private int roomID;
 	private String roomname;
-	private Vector<clientfile> clientlist;
+	Vector<clientfile> roomclientlist;
 	public boolean emtpy;
 	
 	public room(String name,int id){
@@ -14,14 +14,14 @@ public class room{
 		roomname = name;		
 	}
 	public void adduser(clientfile c){
-		clientlist.add(c);
+		roomclientlist.add(c);
 	}
 	public void userleave(clientfile c){
-		clientlist.remove(c);
-		if(clientlist.isEmpty()) emtpy = true;
+		roomclientlist.remove(c);
+		if(roomclientlist.isEmpty()) emtpy = true;
 	}
 	public void sendroom(String msg){
-		for(clientfile c:clientlist) c.send(msg);
+		for(clientfile c:roomclientlist) c.send(msg);
 	}	
 	
 	

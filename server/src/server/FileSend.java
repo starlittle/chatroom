@@ -4,28 +4,46 @@ import java.io.*;
 import java.net.*;
 
 public class FileSend implements Runnable{
-    private ServerSocket filesock;
-    private final int fileport = 9980;
-    
-	public FileSend(){
-		Socket s = null;
-		try {
-            filesock = new ServerSocket(fileport);
-            s = filesock.accept();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	private Socket ss = null;
+	clientfile d;
+	String filename;
+	
+	public FileSend(Socket name,clientfile dest,String fname){	
+			this.ss = name;
+			d = dest;
+			filename = fname;
 	}
-	
-	
-	
-	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		sendfile();
+		try {
+			System.out.println("in run()");
+			receiveFile();	
+			return;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
-	public void sendfile(){
-		
+	private void receiveFile() throws IOException{
+		 try {
+
+			 DataOutputStream dataOut = new DataOutputStream(new BufferedOutputStream(ss.getOutputStream()));
+             
+             dataOut.writeUTF(filename);
+             
+             BufferedInputStream sendin = new BufferedInputStream(new FileInputStream(filename));   
+             
+             int readin; 
+             while((readin = sendin.read()) != -1) { 
+                  dataOut.write(readin);
+             } 
+             
+             dataOut.close();
+             sendin.close();
+             ss.close();
+         }catch(IOException e) {
+             e.printStackTrace();             
+         }
+
 	}
 	
 }
