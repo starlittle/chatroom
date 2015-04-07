@@ -11,12 +11,16 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import client.Client;
+
 public class FileSend implements Runnable{
 	private SendGUI gui;
 	private String serverIP;
+	private Client clientobject;
 	
 	
-	public FileSend( String ip) {
+	public FileSend(Client client, String ip) {
+		clientobject = client;
 		serverIP = ip;
 	}
 	
@@ -40,6 +44,7 @@ public class FileSend implements Runnable{
 	        BufferedInputStream inputStream = new BufferedInputStream( new FileInputStream(sendfile)); 
 	        
             System.out.println("Start sending file..." + filesize);
+            clientobject.sendfstate("Start sending file... filesize = " + filesize + " bytes");
             
             int readin; 
             while((readin = inputStream.read()) != -1) { 
@@ -51,6 +56,7 @@ public class FileSend implements Runnable{
             inputStream.close();  
             socket.close();
             System.out.println("Finish! ");
+            clientobject.sendfstate("Send file is finish!");
 			
 		}
 		catch(Exception e) {

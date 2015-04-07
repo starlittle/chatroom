@@ -2,6 +2,7 @@ package client;
 
 import fileexchange.FileRecv;
 import fileexchange.FileSend;
+import fileexchange.RecvGUI;
 import gui.ChatFrame;
 import gui.ConnectWindow;
 
@@ -10,8 +11,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import sun.audio.*;
 
-public class Client implements Runnable{
+
+public class Client implements Runnable {
 	
 	//
 	ChatFrame GUIObject;
@@ -25,6 +28,8 @@ public class Client implements Runnable{
 	private DataInputStream is;
 	private static Thread thread;
 	private int fileport;
+	public int receive;
+	private RecvGUI receivegui;
 	
 	public String username;
 	private int towho;
@@ -34,7 +39,7 @@ public class Client implements Runnable{
 		GUIObject.setVisible(true);
 		
 		fileport = 8898;
-		
+		receive = 0;
 		//socket = new Socket();
 		//isa = new InetSocketAddress(this.address, this.port);		
 		//connect();
@@ -65,6 +70,17 @@ public class Client implements Runnable{
 			System.out.println(msg);
 			String[] split = msg.split(" ",3);
 			GUIObject.printonGUI(split[1]+ " " +split[2]);
+			if (split[1].compareTo(username) == 0) {
+				System.out.println("same");
+				//playSound("message.au");
+			}
+			else if (split[2].compareTo("joined!") == 0) {
+				System.out.println("join");
+			}
+			else {
+				System.out.println(split[1] + " " + username);
+				playSound("message.au");
+			}
 		}
 		// /ul <username> <id> **setting user list
 		else if (msg.startsWith("/ul")) {
@@ -76,6 +92,7 @@ public class Client implements Runnable{
 		else if (msg.startsWith("/au")) {
 			String[] split = msg.split(" ",3);
 			GUIObject.addUser(split[1], Integer.parseInt(split[2]));
+			playSound("in.au");
 		}
 		// /du <userID> **delete user
 		else if (msg.startsWith("/du")) {
@@ -89,14 +106,26 @@ public class Client implements Runnable{
 			String[] split = msg.split(" ",2);
 			GUIObject.addroomlist(split[1]);
  		}
-		else if (msg.startsWith("/f")) { //file receive
-			System.out.println(" start file receive");
-			Thread frecv = new Thread(new FileRecv(address));
-			frecv.start();
+		else if (msg.startsWith("/f")) { //file receive /f sendname
+			String[] split = msg.split(" ",2);
+			//System.out.println(" start file receive");	
+			receivegui = new RecvGUI(this, split[1]);
+			playSound("b.au");
+			if (receive == 1) {
+				send("/ok");
+				Thread frecv = new Thread(new FileRecv(this,address));
+				frecv.start();
+			}
+			else {
+				send("/no");
+			}
 		}
 		else
 			GUIObject.printonGUI(msg);
 		
+	}
+	public void sendfstate(String msg) {
+		GUIObject.printonGUI(msg);
 	}
 
 	private void interrupt() {
@@ -234,8 +263,27 @@ public class Client implements Runnable{
 	public void sendFile(String filename) {
 		//fileport++;
 		send("/f " + "who");
-		Thread fsend = new Thread(new FileSend(address));
+		Thread fsend = new Thread(new FileSend(this, address));
 		fsend.start();
 	}
 
+	@SuppressWarnings({ "unused", "restriction" })
+	private void playSound( String sound) 
+	{
+		String gongFile = sound;
+	  try
+	  {
+	    // get the sound file as a resource out of my jar file;
+	    // the sound file must be in the same directory as this class file.
+	    // the input stream portion of this recipe comes from a javaworld.com article.
+	    InputStream inputStream = new FileInputStream(gongFile);
+	    AudioStream audioStream = new AudioStream(inputStream);
+	    AudioPlayer.player.start(audioStream);
+	  }
+	  catch (Exception e)
+	  {
+	    // a special way i'm handling logging in this application
+	     e.printStackTrace();
+	  }
+	}
 }

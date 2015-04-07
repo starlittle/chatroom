@@ -8,8 +8,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import client.Client;
+
 public class FileRecv implements Runnable{
 	
+	private Client clientobject;
 	private RecvGUI gui;
 	private String serverIP;
 	//private String srcname;
@@ -17,12 +20,13 @@ public class FileRecv implements Runnable{
 	//private Socket ss = null;
 	private final int fileport = 9988;
 	
-	public FileRecv( String ip) {
+	public FileRecv(Client cl, String ip) {
 		serverIP = ip;
+		clientobject = cl;
 	}
 	
 	public void run() {	
-		gui = new RecvGUI();
+		//gui = new RecvGUI();
 		
 		try {
 			socket = new Socket(serverIP,9988);
@@ -42,6 +46,7 @@ public class FileRecv implements Runnable{
 			 BufferedInputStream inputStream = new BufferedInputStream(socket.getInputStream());
              String fileName = new DataInputStream(inputStream).readUTF();
              System.out.println("filename: " + fileName);
+             clientobject.sendfstate("Receiving file......");
              BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(fileName)); 
               
              int count;
@@ -53,6 +58,7 @@ public class FileRecv implements Runnable{
              }
              System.out.println(bytcount);
 
+             clientobject.sendfstate("Reveice file is finish!");
              outputStream.close();                
              inputStream.close();
 //             ss.close();

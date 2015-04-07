@@ -4,9 +4,17 @@
  * and open the template in the editor.
  */
 package gui;
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileView;
+import javax.swing.text.IconView;
+
 import java.awt.event.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 
 /**
  *
@@ -29,8 +37,7 @@ public class ConnectWindow extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pic = new javax.swing.JPanel();
-        input_port = new javax.swing.JTextField();
+    	input_port = new javax.swing.JTextField();
         portLabel = new javax.swing.JLabel();
         ipLabel = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
@@ -39,20 +46,12 @@ public class ConnectWindow extends javax.swing.JDialog {
         name_remind = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         input_IP = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setModal(true);
         
-        javax.swing.GroupLayout picLayout = new javax.swing.GroupLayout(pic);
-        pic.setLayout(picLayout);
-        picLayout.setHorizontalGroup(
-            picLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 183, Short.MAX_VALUE)
-        );
-        picLayout.setVerticalGroup(
-            picLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
 
         input_port.setFont(new java.awt.Font("微軟正黑體", 0, 12)); // NOI18N
         input_port.setText("8010");
@@ -78,6 +77,14 @@ public class ConnectWindow extends javax.swing.JDialog {
 
         name_remind.setFont(new java.awt.Font("微軟正黑體", 0, 12)); // NOI18N
 
+        jButton1.setFont(new java.awt.Font("微軟正黑體", 0, 12)); // NOI18N
+        jButton1.setText("Pick a profile picture");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setpic();
+            }
+        });
+        
         jButton2.setFont(new java.awt.Font("微軟正黑體", 0, 12)); // NOI18N
         jButton2.setText("Cancel");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -96,69 +103,119 @@ public class ConnectWindow extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(85, 85, 85)
+                        .addComponent(nameLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(name_remind, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 25, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(goButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addComponent(nameLabel))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(input_IP)
-                            .addComponent(input_name)
-                            .addComponent(input_port, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jButton2))
+                            .addComponent(input_IP, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(input_name, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(input_port)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(name_remind, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
                                         .addGap(86, 86, 86)
                                         .addComponent(ipLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addGroup(layout.createSequentialGroup()
                                         .addGap(77, 77, 77)
                                         .addComponent(portLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(0, 25, Short.MAX_VALUE)))))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(pic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ipLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(input_IP, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(portLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(input_port, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(nameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(input_name, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(name_remind, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(goButton)
-                    .addComponent(jButton2))
-                .addGap(41, 41, 41))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(40, 40, 40)
+                    .addComponent(ipLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(input_IP, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(portLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(3, 3, 3)
+                    .addComponent(input_port, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(nameLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(input_name, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(name_remind, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(goButton)
+                        .addComponent(jButton2))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
+    protected synchronized void setpic() {
+		// TODO Auto-generated method stub
+    	JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(new java.io.File("."));
+		fc.setDialogTitle("choose file");
+        fc.setMultiSelectionEnabled(false);
+        
+        FileFilter type2 = new ExtensionFilter("Image files",
+                new String[] { ".jpg", ".gif", "jpeg", "xbm", ".png" });
+        
+        fc.addChoosableFileFilter(type2);
+        fc.setFileFilter(type2);
+        
+        //FileView view = new IconView();
+        //fc.setFileView(view);
+        
+		int result = fc.showOpenDialog(new JFrame());
+		File sendfile;
+		if (result == JFileChooser.APPROVE_OPTION) {
+			sendfile = fc.getSelectedFile();
+			
+			//ImageIcon i = fc.getIcon(sendfile);
+			
+			String n = sendfile.getName();
+			System.out.println("getfile: " + n);
+			//putpic(sendfile.getName());
+			
+			ImageIcon image = new ImageIcon(n);	
+			
+			Image img = image.getImage() ;  
+			Image newimg = img.getScaledInstance( jButton1.getWidth() -10 , jButton1.getHeight() -5,  java.awt.Image.SCALE_SMOOTH ) ;  
+			image = new ImageIcon( newimg );
+			
+			jButton1.setIcon(image);
+		    jButton1.setText(null);
+		}
+		else
+			System.out.println("no get");
+	}
+
+	/*private void putpic(String Imagename) {
+		// TODO Auto-generated method stub
+		//ImageIcon image = new ImageIcon("a.jpg");
+		
+		pic = new JPanel();
+	    ImageIcon image = new ImageIcon("unsure.gif");
+	    pic.add(new JLabel(image));
+		
+	    add(pic);
+	    setVisible(true);
+	    
+		//JLabel label = new JLabel("", image, JLabel.CENTER);
+		//this.getContentPane().add(pic);
+		//setVisible(true);
+	} */
+
+	private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
         IP = input_IP.getText();
         String port_text = input_port.getText();
         port = new java.lang.Integer(port_text).intValue();
@@ -179,6 +236,7 @@ public class ConnectWindow extends javax.swing.JDialog {
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton goButton;
@@ -186,10 +244,46 @@ public class ConnectWindow extends javax.swing.JDialog {
     private javax.swing.JTextField input_name;
     private javax.swing.JTextField input_port;
     private javax.swing.JLabel ipLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JLabel name_remind;
-    private javax.swing.JPanel pic;
     private javax.swing.JLabel portLabel;
     // End of variables declaration//GEN-END:variables
+    
+    public class ExtensionFilter extends FileFilter {
+        private String extensions[];
+        private String description;
+
+        public ExtensionFilter(String description, String extension) {
+          this(description, new String[] { extension });
+        }
+        
+        public ExtensionFilter(String description, String extensions[]) {
+          this.description = description;
+          this.extensions = (String[]) extensions.clone();
+        }
+
+        public boolean accept(File file) {
+          if (file.isDirectory()) {
+            return true;
+          }
+          int count = extensions.length;
+          String path = file.getAbsolutePath();
+          for (int i = 0; i < count; i++) {
+            String ext = extensions[i];
+            if (path.endsWith(ext)
+                && (path.charAt(path.length() - ext.length()) == '.')) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        public String getDescription() {
+          return (description == null ? extensions[0] : description);
+        }
+      }
 }
+
+
