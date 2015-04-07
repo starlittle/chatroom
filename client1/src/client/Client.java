@@ -65,16 +65,17 @@ public class Client implements Runnable {
 	
 	
 	private void parseMsg(String msg) {
-		//  /p <user> <msg>
+		//  /p <roomID> <user> <msg>
 		if (msg.startsWith("/p")) {
 			System.out.println(msg);
-			String[] split = msg.split(" ",3);
-			GUIObject.printonGUI(split[1]+ " " +split[2]);
-			if (split[1].compareTo(username) == 0) {
+			String[] split = msg.split(" ",4);
+			GUIObject.setID(Integer.parseInt(split[1]));
+			GUIObject.printonGUI(split[2]+ " " +split[3]);
+			if (split[2].compareTo(username) == 0) {
 				System.out.println("same");
 				//playSound("message.au");
 			}
-			else if (split[2].compareTo("joined!") == 0) {
+			else if (split[3].compareTo("joined!") == 0) {
 				System.out.println("join");
 			}
 			else {
