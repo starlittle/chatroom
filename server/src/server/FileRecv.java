@@ -6,15 +6,18 @@ import java.net.*;
 public class FileRecv implements Runnable{
 	private Socket ss = null;
 	clientfile d;
+	String username;
+	server mainserver;
 	
-	public FileRecv(Socket name,clientfile dest){	
+	public FileRecv(Socket name,clientfile dest,String uname,server ms){	
 			this.ss = name;
 			d = dest;
-//			fileServer = f;
+			username = uname; 
+			mainserver = ms;
 	}
 	public void run() {
 		try {
-			System.out.println("in run()");
+			System.out.println("in recv()");
 			receiveFile();	
 			return;
 		} catch (IOException e) {
@@ -36,13 +39,16 @@ public class FileRecv implements Runnable{
              }
              System.out.println(bytcount);
              
-             d.send("/f");
+             mainserver.sendAll("/f " + username);
+             for(clientfile c:mainserver.clientList){
+            	 if(c.isonleave()==false && c!=d)
+            		 c.fileName = fileName;
+             }
              
-             d.fileName = fileName;
 
              outputStream.close();                
              inputStream.close();
-//             ss.close();
+             ss.close();
          }catch(IOException e) {
              e.printStackTrace();             
          }

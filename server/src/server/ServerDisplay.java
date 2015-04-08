@@ -2,6 +2,7 @@ package server;
 
 import java.util.*;
 
+import javax.swing.JTree;
 import javax.swing.table.*;
 import javax.swing.tree.*;
 
@@ -63,8 +64,8 @@ public class ServerDisplay extends javax.swing.JFrame {
 
         roomL.setText("Rooms");
 
-        javax.swing.tree.DefaultMutableTreeNode root = new javax.swing.tree.DefaultMutableTreeNode("root");
-        roomTree.setModel(new javax.swing.tree.DefaultTreeModel(root));
+        //javax.swing.tree.DefaultMutableTreeNode root = new javax.swing.tree.DefaultMutableTreeNode("root");
+        //roomTree.setModel(new javax.swing.tree.DefaultTreeModel(root));
         roomTree.setRootVisible(false);
         jScrollPane2.setViewportView(roomTree);
         
@@ -188,21 +189,29 @@ public class ServerDisplay extends javax.swing.JFrame {
     public void offlineUser(int id){
     	user.setValueAt("Off line", id, 2);
     }
-    public void addroom(String roomname){
+    public void addroom(String roomname,int roomID){
     	DefaultMutableTreeNode tmp = new DefaultMutableTreeNode(roomname);
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode) room.getRoot();
-    	room.insertNodeInto(tmp, root, root.getChildCount());	
+    	room.insertNodeInto(tmp, root, root.getChildCount());
+    	room.reload();
+    	System.out.println("finished addroom");
     }
     public void addroomuser(int roomid, String username){
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode) room.getRoot();
-    	DefaultMutableTreeNode destrm = (DefaultMutableTreeNode) room.getChild(root, roomid);
+    	DefaultMutableTreeNode destrm = (DefaultMutableTreeNode) room.getChild(root, roomid-1);
     	DefaultMutableTreeNode tmp = new DefaultMutableTreeNode(username);
     	room.insertNodeInto(tmp, destrm, destrm.getChildCount());
+    	System.out.println("finished adduser");
+    	room.reload();
+    }
+    public void deleteroomuser(int roomid, String username){
+    	
     }
 
     private server mainserver;
     private DefaultTableModel user = new DefaultTableModel();
-    private DefaultTreeModel room;
+	private MutableTreeNode treeroot = new DefaultMutableTreeNode("treeroot");
+    private DefaultTreeModel room = new DefaultTreeModel(treeroot);
     // Variables declaration - do not modify                     
     private javax.swing.JLabel IP;
     private javax.swing.JTextField IPField;

@@ -12,6 +12,8 @@ public class room{
 	public room(String name,int id){
 		roomID = id;
 		roomname = name;		
+		roomclientlist = new Vector<clientfile>();
+	    System.out.println("in room");
 	}
 	public void adduser(clientfile c){
 		roomclientlist.add(c);
@@ -21,8 +23,17 @@ public class room{
 		if(roomclientlist.isEmpty()) emtpy = true;
 	}
 	public void sendroom(String msg){
-		for(clientfile c:roomclientlist) c.send(msg);
+		for(clientfile c:roomclientlist){
+			if(c.isonleave()==false)
+				c.send(msg);
+		}			
 	}	
-	
+	public String getname(){
+		return roomname;
+	}
+	public boolean isinroom(clientfile c){
+		if(roomclientlist.contains(c)) return true;
+		else return false;
+	}
 	
 }

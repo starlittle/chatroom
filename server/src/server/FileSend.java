@@ -5,17 +5,15 @@ import java.net.*;
 
 public class FileSend implements Runnable{
 	private Socket ss = null;
-	clientfile d;
 	String filename;
 	
-	public FileSend(Socket name,clientfile dest,String fname){	
+	public FileSend(Socket name,String fname){	
 			this.ss = name;
-			d = dest;
 			filename = fname;
 	}
 	public void run() {
 		try {
-			System.out.println("in run()");
+			System.out.println("in send()");
 			receiveFile();	
 			return;
 		} catch (IOException e) {

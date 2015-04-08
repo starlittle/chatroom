@@ -13,6 +13,7 @@ public class server{
 	Vector<clientfile> clientList;
 	Vector<room> roomlist;
 	Vector<String> roomnameList;
+	//Vector<String> roomRealList;
 	Vector<String> nameList;
 	Vector<String> pswordList;
 	private int id;
@@ -25,6 +26,9 @@ public class server{
 	public server(){
 		clientList = new Vector<clientfile>();
 		nameList = new Vector<String>();
+		roomlist = new Vector<room>();
+		roomnameList = new Vector<String>();
+		//roomRealList = new Vector<String>();
 		gui = new ServerDisplay(this);
 		gui.setVisible(true);
 		Thread t;
@@ -77,48 +81,73 @@ public class server{
 		for(clientfile c: clientList)
 			if(c.isonleave()==false) 
 				c.send(msg);		
-		gui.showLog("broadcast: " + msg);
+		gui.showLog("broadcasts: " + msg);
 	}
-	public boolean sendPrivate(int id, int roomid, String msg){
+	public boolean sendPrivate(int id, int rid, String msg){
 		clientfile c = clientList.get(id);
 		if(c.isonleave()==true) return false;
 		else {
 			c.send(msg);
-			gui.showLog("whisper: " + msg);
+			gui.showLog("whisper to " + c.getname() + " in Room: " + rid + msg);
 			return true;
 		}
 	}
 	public void adduser(String name, int id){
 		nameList.add(name);
 		gui.adduser(name, id);
+		gui.showLog(name + " entered.");
 	}
-	public void addroom(String roomname){
-		roomlist.add(new room(roomname,roomid++));
-		roomnameList.add(roomname);
-		gui.addroom(roomname);	
+	public void addroom(String roomname, int consid){
+		++roomid;
+		clientfile c = clientList.get(consid);
+		roomlist.add(new room(roomname ,roomid));
+		roomnameList.add(roomname + " | " + c.getname());
+		gui.addroom(roomname + " | " + c.getname() ,roomid);
+		gui.showLog("Add Room " + roomid + " :" + roomname + " | " + c.getname() );
 	}
-	public void addtoroom(int roomID, int userID){
+	public void addtoroom(int rID, int userID){
 		clientfile c = clientList.get(userID);
 		String username = c.getname();
-		room r = roomlist.get(roomID);
+		room r = roomlist.get(rID-1);
 		r.adduser(c);
-		gui.addroomuser(roomID, username);
+		for(clientfile cl:(r.roomclientlist)){
+			if(cl!=c && cl.isonleave()==false) 
+				c.send("/aru " + roomid + " " + cl.getname() + " " + cl.getid());
+		}
+		gui.addroomuser(rID, username);
+		gui.showLog("Add " + username + " into Room " + rID);
 	}
-	public void sendroom(int roomID, String msg){
-		room r = roomlist.get(roomID);
+	public void sendroom(int rID, String msg){
+		room r = roomlist.get(rID-1);
 		if(r.emtpy==true) return;
 		r.sendroom(msg);
-		gui.showLog("Send to room " + roomID + " : " + msg);
+		gui.showLog("Send to room " + rID + " : " + msg);
+	}
+	public void leaveroom(int rID, int uID){
+		room r = roomlist.get(rID-1);
+		clientfile leave = clientList.get(uID);
+		if(r.emtpy==true) return;
+			r.userleave(leave);
+		gui.showLog(leave.getname() + " left Room " + rID );
+		gui.deleteroomuser(rID,leave.getname());
+		r.sendroom("/p " + leave.getname() + " left Room ");
 	}
 	public void leave(int id){
 		sendAll("/du " + id);
-		sendAll("/p " + nameList.get(id) + " left");
+		sendAll("/p 0 " + nameList.get(id) + " left");
 		gui.offlineUser(id);
+		gui.showLog(nameList.get(id) + " left");
+	}
+	public void sendfile(int id){
+		clientfile dest = clientList.get(id);
+//		dest.recvfile();
+		gui.showLog("Send file to " + dest.getname());
 	}
 	public void kick(int id){
 		clientfile c = clientList.get(id);
 		try {
 			c.closesocket();
+			gui.showLog("Bye " + c.getname());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
