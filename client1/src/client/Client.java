@@ -11,6 +11,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import javax.swing.ImageIcon;
+
+import audio.audio;
+import fileexchange.RecvGUI;
 import sun.audio.*;
 
 
@@ -28,8 +32,10 @@ public class Client implements Runnable {
 	private DataInputStream is;
 	private static Thread thread;
 	private int fileport;
-	public int receive;
+	public int receive;	
 	private RecvGUI receivegui;
+	public ImageIcon profilepic;
+	private audio au;
 	
 	public String username;
 	private int towho;
@@ -69,7 +75,7 @@ public class Client implements Runnable {
 		if (msg.startsWith("/p")) {
 			System.out.println(msg);
 			String[] split = msg.split(" ",4);
-			GUIObject.setID(Integer.parseInt(split[1]));
+			GUIObject.setID(split[1]);
 			GUIObject.printonGUI(split[2]+ " " +split[3]);
 			if (split[2].compareTo(username) == 0) {
 				System.out.println("same");
@@ -78,10 +84,18 @@ public class Client implements Runnable {
 			else if (split[3].compareTo("joined!") == 0) {
 				System.out.println("join");
 			}
+			else if (split[3].compareTo("left") == 0) {
+				System.out.println("left");
+			}
 			else {
 				System.out.println(split[1] + " " + username);
 				playSound("message.au");
 			}
+		}
+		else if(msg.startsWith("/i")){
+			String[] split = msg.split(" ",4);
+			GUIObject.setID(split[1]);
+			GUIObject.printimage(split[3], split[2]);
 		}
 		// /ul <username> <id> **setting user list
 		else if (msg.startsWith("/ul")) {
@@ -100,13 +114,35 @@ public class Client implements Runnable {
 			String[] split = msg.split(" ",2);
 			System.out.println(msg);
 			GUIObject.delUser(Integer.parseInt(split[1]));
+			playSound("in.au");
 		}
 		// /r <roomID>
 		else if (msg.startsWith("/r")) {
 			// add in room list
 			String[] split = msg.split(" ",2);
-			GUIObject.addroomlist(split[1]);
- 		}
+			GUIObject.addTab(split[1]);
+		
+		}	// /dt <roomID> 
+	   else if (msg.startsWith("/dt")){
+		   String[] split = msg.split(" ",2);
+		   GUIObject.setID(split[1]);
+			GUIObject.delTab(split[1]);
+		   
+ 		}// /aru <roomID> <username> <userID>
+        else if(msg.startsWith("/aru")){
+            String[] split = msg.split(" ",4);
+            GUIObject.addrUser(split[1],split[2],split[3]);
+            
+        }// /dru <roomID> <userID>
+        else if(msg.startsWith("/dru")){
+        	String[] split = msg.split(" ", 3);
+        	GUIObject.delrUser(split[1], split[2]);
+        }
+		// /at <roomID> <roomname>
+        else if(msg.startsWith("/at")){
+        	String[] split = msg.split(" ",3);
+        	GUIObject.invitedtoRoom(split[1],split[2]);
+        }
 		else if (msg.startsWith("/f")) { //file receive /f sendname
 			String[] split = msg.split(" ",2);
 			//System.out.println(" start file receive");	
@@ -121,11 +157,24 @@ public class Client implements Runnable {
 				send("/no");
 			}
 		}
+		else if (msg.startsWith("/as")) { //be connect audio
+			send("/sp");
+			//send("/na");  不要
+		}
+		else if (msg.startsWith("/sn")) {
+			//put on console
+		}
+		else if (msg.startsWith("/st")) {  // /st ip port1 port2
+			String[] split = msg.split(" ",4);
+			au = new audio(split[1],split[2],split[3]);
+			au.runVOIP();
+		}
 		else
 			GUIObject.printonGUI(msg);
 		
 	}
 	public void sendfstate(String msg) {
+		GUIObject.setID("0");
 		GUIObject.printonGUI(msg);
 	}
 
@@ -168,6 +217,8 @@ public class Client implements Runnable {
 		address = connectWin.IP;
 		port = connectWin.port;
 		username = connectWin.name;
+		profilepic = connectWin.image;
+		GUIObject.setName(username);
 		
 		try {
 			//socket = new Socket();
@@ -214,6 +265,7 @@ public class Client implements Runnable {
 				String msg = i.readUTF();
 				if (msg.equals("Recvname")) {
 					System.out.println("Receive name check");
+					GUIObject.setprofile(profilepic);
 					break;
 				}
 				else if (msg.equals("Name used!")) {
@@ -258,17 +310,30 @@ public class Client implements Runnable {
 	public void addroom(String msg) {
 		send("/ar " + msg);
 	}
+	public void droom(int roomID){
+		send("/lr " + roomID);
+	}
 	public void addutroom(int roomID, int iuID) {
 		send("/aur " + roomID + " " + iuID);
 	}
 	public void sendFile(String filename) {
 		//fileport++;
+		
 		send("/f " + "who");
 		Thread fsend = new Thread(new FileSend(this, address));
 		fsend.start();
 	}
+	public void sendImage(int roomID, String image){
+		send("/i " + roomID + " "+ image);
+	}
+	public void sendaudio(int i){ //id
+		send("/as " + i);
+		//au = new audio();
+	}
+
 
 	@SuppressWarnings({ "unused", "restriction" })
+	
 	private void playSound( String sound) 
 	{
 		String gongFile = sound;
@@ -287,4 +352,5 @@ public class Client implements Runnable {
 	     e.printStackTrace();
 	  }
 	}
+	
 }

@@ -28,6 +28,7 @@ public class ConnectWindow extends javax.swing.JDialog {
     public int port;
     public String IP;
     public String name;
+    public ImageIcon image;
     public ConnectWindow(ChatFrame f) {
         super(f);
         initComponents();
@@ -174,7 +175,7 @@ public class ConnectWindow extends javax.swing.JDialog {
         
         //FileView view = new IconView();
         //fc.setFileView(view);
-        
+        image = null;
 		int result = fc.showOpenDialog(new JFrame());
 		File sendfile;
 		if (result == JFileChooser.APPROVE_OPTION) {
@@ -183,10 +184,11 @@ public class ConnectWindow extends javax.swing.JDialog {
 			//ImageIcon i = fc.getIcon(sendfile);
 			
 			String n = sendfile.getName();
-			System.out.println("getfile: " + n);
+			String p = sendfile.getAbsolutePath();
+			System.out.println("getfile: "+ p);
 			//putpic(sendfile.getName());
 			
-			ImageIcon image = new ImageIcon(n);	
+			image = new ImageIcon(p);	
 			
 			Image img = image.getImage() ;  
 			Image newimg = img.getScaledInstance( jButton1.getWidth() -10 , jButton1.getHeight() -5,  java.awt.Image.SCALE_SMOOTH ) ;  
@@ -195,8 +197,9 @@ public class ConnectWindow extends javax.swing.JDialog {
 			jButton1.setIcon(image);
 		    jButton1.setText(null);
 		}
-		else
+		else 
 			System.out.println("no get");
+		
 	}
 
 	/*private void putpic(String Imagename) {
