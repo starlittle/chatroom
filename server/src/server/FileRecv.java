@@ -39,9 +39,9 @@ public class FileRecv implements Runnable{
              }
              System.out.println(bytcount);
              
-             mainserver.sendAll("/f " + username);
              for(clientfile c:mainserver.clientList){
             	 if(c.isonleave()==false && c!=d)
+            		 c.send("/f " + username);
             		 c.fileName = fileName;
              }
              

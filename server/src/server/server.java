@@ -112,7 +112,7 @@ public class server{
 		r.adduser(c);
 		for(clientfile cl:(r.roomclientlist)){
 			if(cl!=c && cl.isonleave()==false) 
-				c.send("/aru " + roomid + " " + cl.getname() + " " + cl.getid());
+				c.send("/aru " + rID + " " + cl.getname() + " " + cl.getid());
 		}
 		gui.addroomuser(rID, username);
 		gui.showLog("Add " + username + " into Room " + rID);
@@ -126,15 +126,22 @@ public class server{
 	public void leaveroom(int rID, int uID){
 		room r = roomlist.get(rID-1);
 		clientfile leave = clientList.get(uID);
+		gui.deleteroomuser(rID,r.getidxof(leave));
 		if(r.emtpy==true) return;
 			r.userleave(leave);
-		gui.showLog(leave.getname() + " left Room " + rID );
-		gui.deleteroomuser(rID,leave.getname());
-		r.sendroom("/p " + leave.getname() + " left Room ");
+		gui.showLog(leave.getname() + " left Room " + rID );		
+		r.sendroom("/p " + rID + " " + leave.getname() + " left Room ");
 	}
 	public void leave(int id){
 		sendAll("/du " + id);
 		sendAll("/p 0 " + nameList.get(id) + " left");
+		clientfile leave = clientList.get(id);
+		for(room rl:roomlist){
+			if(rl.isinroom(leave)) {
+				rl.userleave(leave);
+				rl.sendroom("/dru " + rl.getid() + " " + id);
+			}
+		}
 		gui.offlineUser(id);
 		gui.showLog(nameList.get(id) + " left");
 	}
@@ -143,6 +150,19 @@ public class server{
 //		dest.recvfile();
 		gui.showLog("Send file to " + dest.getname());
 	}
+/*	public void audio(clientfile from,clientfile to){
+		final int PACKETSIZE = 8192 ;
+		try {
+			DatagramSocket socketfrom = new DatagramSocket( 7777 ) ;
+			DatagramSocket socketto = new DatagramSocket( 5555 ) ;
+			DatagramPacket packet = new DatagramPacket( new byte[PACKETSIZE], PACKETSIZE ) ;// Create a packet
+			socketfrom.receive(packet);
+			socketto.send(packet);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}*/
 	public void kick(int id){
 		clientfile c = clientList.get(id);
 		try {

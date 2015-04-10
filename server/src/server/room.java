@@ -35,5 +35,11 @@ public class room{
 		if(roomclientlist.contains(c)) return true;
 		else return false;
 	}
+	public int getidxof(clientfile c){
+		return roomclientlist.indexOf(c);
+	}
+	public int getid(){
+		return roomID;
+	}
 	
 }

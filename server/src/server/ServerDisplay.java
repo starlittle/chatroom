@@ -30,16 +30,12 @@ public class ServerDisplay extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        IP = new javax.swing.JLabel();
-        IPField = new javax.swing.JTextField();
+
         usersL = new javax.swing.JLabel();
         roomL = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         roomTree = new javax.swing.JTree(room);
-        portnum = new javax.swing.JLabel();
-        PortField = new javax.swing.JTextField();
-        StarButton = new javax.swing.JButton();
-        StopButton = new javax.swing.JButton();
+
         jScrollPane3 = new javax.swing.JScrollPane();
         logArea = new javax.swing.JTextArea();
         logL = new javax.swing.JLabel();
@@ -51,15 +47,6 @@ public class ServerDisplay extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(605, 623));
         setResizable(false);
         
-        IP.setText("IP");
-
-        IPField.setText("140.112.18.219");
-        IPField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                IPFieldActionPerformed(evt);
-            }
-        });
-
         usersL.setText("Users");
 
         roomL.setText("Rooms");
@@ -69,14 +56,6 @@ public class ServerDisplay extends javax.swing.JFrame {
         roomTree.setRootVisible(false);
         jScrollPane2.setViewportView(roomTree);
         
-        portnum.setText("Port Number");
-
-        PortField.setText("8010");
-
-        StarButton.setText("Start Server");
-
-        StopButton.setText("Stop Server");
-
         logArea.setColumns(20);
         logArea.setRows(5);
         jScrollPane3.setViewportView(logArea);
@@ -99,70 +78,48 @@ public class ServerDisplay extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(IP)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(IPField, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(portnum)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PortField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(usersL)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(roomL)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(kickbutton))
-                    .addComponent(jScrollPane2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(134, 134, 134)
-                                .addComponent(StarButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(StopButton))
-                            .addComponent(logL))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(IP)
-                    .addComponent(IPField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(portnum)
-                    .addComponent(PortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(StarButton)
-                    .addComponent(StopButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(usersL)
-                    .addComponent(logL))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(roomL)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(kickbutton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(usersL)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(roomL)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                            .addComponent(kickbutton))
+                        .addComponent(jScrollPane2))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane3)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(logL)
+                            .addGap(0, 274, Short.MAX_VALUE)))
+                    .addContainerGap())
+            );
+            layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(31, 31, 31)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(usersL)
+                        .addComponent(logL))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(roomL)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(kickbutton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane3))
+                    .addContainerGap())
         );
 
         pack();
@@ -204,8 +161,14 @@ public class ServerDisplay extends javax.swing.JFrame {
     	System.out.println("finished adduser");
     	room.reload();
     }
-    public void deleteroomuser(int roomid, String username){
-    	
+    public void deleteroomuser(int roomid, int userid){
+    	System.out.println(roomid + " " +userid);
+    	DefaultMutableTreeNode root = (DefaultMutableTreeNode) room.getRoot();
+    	DefaultMutableTreeNode destrm = (DefaultMutableTreeNode) room.getChild(root, roomid-1);
+    	System.out.println("im here");
+    	DefaultMutableTreeNode tmp = (DefaultMutableTreeNode) room.getChild(destrm, userid);
+    	room.removeNodeFromParent(tmp);
+    	room.reload();    	
     }
 
     private server mainserver;
@@ -213,18 +176,12 @@ public class ServerDisplay extends javax.swing.JFrame {
 	private MutableTreeNode treeroot = new DefaultMutableTreeNode("treeroot");
     private DefaultTreeModel room = new DefaultTreeModel(treeroot);
     // Variables declaration - do not modify                     
-    private javax.swing.JLabel IP;
-    private javax.swing.JTextField IPField;
-    private javax.swing.JTextField PortField;
-    private javax.swing.JButton StarButton;
-    private javax.swing.JButton StopButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton kickbutton;
     private javax.swing.JTextArea logArea;
     private javax.swing.JLabel logL;
-    private javax.swing.JLabel portnum;
     private javax.swing.JLabel roomL;
     private javax.swing.JTree roomTree;
     private javax.swing.JTable userTable;

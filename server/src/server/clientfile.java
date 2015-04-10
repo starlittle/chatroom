@@ -2,6 +2,11 @@ package server;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.TargetDataLine;
 
 public class clientfile implements Runnable{
 	private Socket s;
@@ -13,6 +18,7 @@ public class clientfile implements Runnable{
 	private int id;
 	private boolean onleave=false;
 	private FileRecv filer;
+	private clientfile audiotarget;
 	String TransferLine;
 	String fileName;
 	
@@ -107,9 +113,9 @@ public class clientfile implements Runnable{
 		}
 		else if(msg.startsWith("/lr")){
 			int roomid = Integer.parseInt(msg.split(" ", 3)[1]);
-			int userid = Integer.parseInt(msg.split(" ", 3)[2]);
-			mainserver.leaveroom(roomid, userid);
-			mainserver.sendroom(roomid, "/dru " + roomid + userid);
+			mainserver.leaveroom(roomid, id);
+			mainserver.sendroom(roomid, "/dru " + roomid + " " + id);
+			send("/dt " + roomid);
 		}
 		else if(msg.startsWith("/aur")){
 			int roomid = Integer.parseInt(msg.split(" ", 3)[1]);
@@ -146,6 +152,23 @@ public class clientfile implements Runnable{
 			recvfile();
 			System.out.println("Start sending");
 		}
+		else if(msg.startsWith("/as")){
+			int destid = Integer.parseInt(msg.split(" ", 3)[1]);
+//			audiorecv();
+			clientfile dest = mainserver.clientList.get(destid);
+			dest.send("/as " + id);
+			dest.audiotarget = this;
+		}
+		else if(msg.startsWith("/sp")){
+			String myip = s.getInetAddress().toString().split("/")[1];
+			String destip = audiotarget.s.getInetAddress().toString().split("/")[1];
+			audiotarget.send("/st " + myip + " 7100 7200");
+			send("/st " + destip + " 7200 7100");
+//			mainserver.audio(audiotarget, this);
+		}
+		else if(msg.startsWith("/na")){
+			audiotarget.send("/sn");
+		}
 	}
 	public void recvfile(){
 		Socket fs = null;
@@ -157,6 +180,28 @@ public class clientfile implements Runnable{
 		}
 		Thread ts = new Thread(new FileSend(fs,fileName));
 		ts.start();
+	}
+	public void audiorecv(){
+		try {
+			DatagramSocket socket = new DatagramSocket( 7777 ) ;
+			AudioFormat format = new AudioFormat(44100, 16, 2, true, true);
+			DataLine.Info sourceInfo = new DataLine.Info(SourceDataLine.class, format);
+			SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(sourceInfo);
+			sourceLine.open(format);
+			sourceLine.start();			
+			System.out.println("server waiting");
+			byte [] data = new byte[1000];
+			while(true){
+				DatagramPacket packet = new DatagramPacket( new byte[1000], 1000 ) ;
+				packet.setData( new byte[1000] ) ;
+				socket.receive( packet ) ;
+				System.out.println("heyhey");
+				sourceLine.write(data, 0, data.length); 
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public int getid(){
 		return id;
